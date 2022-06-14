@@ -10,6 +10,7 @@ import java.util.Collection;
 @RestController
 @RequestMapping("/student")
 public class StudentController {
+
     private final StudentService studentService;
 
     public StudentController(StudentService studentService) {
@@ -17,44 +18,27 @@ public class StudentController {
     }
 
     @PostMapping
-    public ResponseEntity<Student> createStudent(@RequestBody Student student) {
-        return ResponseEntity.ok(studentService.createStudent(student));
+    public Student createStudent(@RequestBody Student student) {
+        return studentService.createStudent(student);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Student> getStudentInfo(@PathVariable long id) {
-        Student student = studentService.findStudent(id);
-        if (student == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(student);
+    @PutMapping()
+    public Student editStudent(@RequestBody Student student) {
+        return studentService.editStudent(student);
     }
 
-    @PutMapping
-    public ResponseEntity<Student> editStudent(@RequestBody Student student) {
-        Student foundStudent = studentService.editStudent(student);
-        if (foundStudent == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(foundStudent);
+    @DeleteMapping("{userId}")
+    public ResponseEntity deleteStudent(@PathVariable Long id) {
+        return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Student> deleteStudent(@PathVariable long id) {
-        Student student = studentService.deleteStudent(id);
-        if (student == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(student);
+    @GetMapping("{id}")
+    public Student getStudentInfo(@PathVariable Long id) {
+        return studentService.findStudent(id);
     }
 
-    @GetMapping("/age/{age}")
-    public ResponseEntity<Collection<Student>> filterStudentsByAge(@PathVariable int age) {
-        return ResponseEntity.ok(studentService.filterStudentsByAge(age));
-    }
-
-    @GetMapping //http://localhost:8080/student
-    public ResponseEntity<Collection<Student>> getAll() {
-        return ResponseEntity.ok(studentService.getAllStudents());
+    @GetMapping()
+    public Collection<Student> printList() {
+        return studentService.getAllStudents();
     }
 }
