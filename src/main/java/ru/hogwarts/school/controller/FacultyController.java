@@ -16,45 +16,28 @@ public class FacultyController {
         this.facultyService = facultyService;
     }
 
-    @PostMapping
-    public ResponseEntity<Faculty> createFaculty(@RequestBody Faculty faculty) {
-        return ResponseEntity.ok(facultyService.createFaculty(faculty));
-    }
-
     @GetMapping("/{id}")
-    public ResponseEntity<Faculty> getFacultyInfo(@PathVariable long id) {
-        Faculty faculty = facultyService.findFaculty(id);
-        if (faculty == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(faculty);
-    }
-
-    @PutMapping
-    public ResponseEntity<Faculty> editFaculty(@RequestBody Faculty faculty) {
-        Faculty foundFaculty = facultyService.editFaculty(faculty);
-        if (foundFaculty == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(foundFaculty);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Faculty> deleteFaculty(@PathVariable long id) {
-        Faculty faculty = facultyService.deleteFaculty(id);
-        if (faculty == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(faculty);
+    public Faculty getFacultyInfo(@PathVariable Long id) {
+        return facultyService.findFaculty(id);
     }
 
     @GetMapping
-    public ResponseEntity<Collection<Faculty>> getAll() {
+    public ResponseEntity<Collection<Faculty>> getAllFaculties() {
         return ResponseEntity.ok(facultyService.getAllFaculties());
     }
 
-    @GetMapping("/color/{color}")
-    public ResponseEntity<Collection<Faculty>> filterFacultiesByColor(@PathVariable String color) {
-        return ResponseEntity.ok(facultyService.filterFacultiesByColor(color));
+    @PostMapping
+    public Faculty createFaculty(@RequestBody Faculty faculty) {
+        return facultyService.creatFaculty(faculty);
+    }
+
+    @PutMapping
+    public Faculty editFaculty(@RequestBody Faculty faculty) {
+        return facultyService.editFaculty(faculty);
+    }
+
+    @DeleteMapping("/{userId}")
+    public ResponseEntity deleteFaculty(@PathVariable Long id) {
+        return ResponseEntity.ok().build();
     }
 }
