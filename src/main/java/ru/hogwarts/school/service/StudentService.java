@@ -1,46 +1,52 @@
 package ru.hogwarts.school.service;
 
 import org.springframework.stereotype.Service;
+import ru.hogwarts.school.model.Avatar;
+import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.repository.StudentRepository;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Service
 public class StudentService {
-    private final Map<Long, Student> students = new HashMap<>();
-    private Long lastId = 0L;
+    private final StudentRepository studentRepository;
 
-    public Student createStudent(Student student) {
-        student.setId(++lastId);
-        students.put(lastId, student);
-        return student;
+    public StudentService(StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
     }
 
-    public Student findStudent(long lastId) {
-        return students.get(lastId);
+    public Student createStudent(Student student) {
+        return studentRepository.save(student);
+    }
+
+    public Student readStudent(long id) {
+        return studentRepository.findById(id).get();
     }
 
     public Student editStudent(Student student) {
-        if (students.containsKey(student.getId())) {
-            students.put(student.getId(), student);
-            return student;
+        return studentRepository.save(student);
+    }
+
+    public void deleteStudent(long id) {
+        studentRepository.deleteById(id);
+    }
+
+    public Collection<Student> searchAgeStudent(int min, int max) {
+        if (min != 0 && max != 0) {
+            return studentRepository.findByAgeBetween(min, max);
         }
-        return null;
+        return studentRepository.findAll();
     }
 
-    public Student deleteStudent(long id) {
-        return students.remove(id);
+    public Collection<Student> getList() {
+        return studentRepository.findAll();
     }
 
-    public Collection<Student> getAllStudents() {
-        return Collections.unmodifiableCollection(students.values());
+    public Faculty facultyStudent(Long id) throws Exception {
+        return studentRepository.findById(id).orElseThrow(() -> new Exception("Студент не найден")).getFaculty();
     }
-
-    public Collection<Student> filterStudentsByAge(int age) {
-        return students.values().stream().filter(student -> student.getAge() == age).collect(Collectors.toList());
+    public Avatar avatarStudent(Long id) throws Exception {
+        return studentRepository.findById(id).orElseThrow(() -> new Exception("Студент не найден")).getAvatar();
     }
 }
