@@ -1,15 +1,38 @@
 package ru.hogwarts.school.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import java.util.Collection;
 import java.util.Objects;
 
+@Entity
 public class Faculty {
+
+    @Id
+    @GeneratedValue
     private Long id;
-    private String name;
+    private String title;
     private String color;
 
-    public Faculty(Long id, String name, String color) {
+    @JsonIgnore
+    @OneToMany(mappedBy = "faculty")
+    private Collection<Student> students;
+
+    public Faculty() {
+    }
+
+    public Faculty(String title, String color) {
+        this.title = title;
+        this.color = color;
+    }
+
+    public Faculty(Long id, String title, String color) {
         this.id = id;
-        this.name = name;
+        this.title = title;
         this.color = color;
     }
 
@@ -21,12 +44,12 @@ public class Faculty {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle (String title) {
+        this.title = title;
     }
 
     public String getColor() {
@@ -37,25 +60,28 @@ public class Faculty {
         this.color = color;
     }
 
+    public Collection<Student> getStudents() {
+        return students;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Faculty faculty = (Faculty) o;
-        return Objects.equals(id, faculty.id) && Objects.equals(name, faculty.name) && Objects.equals(color, faculty.color);
+        return id.equals(faculty.id) && title.equals(faculty.title) && color.equals(faculty.color);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, color);
+        return Objects.hash(id, title, color);
     }
 
     @Override
     public String toString() {
-        return "Faculty(" +
-                "id= " + id +
-                ", name= '" + name +
-                ", color= '" + color +
-                ')';
+        return "Faculty" +
+                "id=" + id +
+                ", name='" + title +
+                ", color='" + color;
     }
 }
