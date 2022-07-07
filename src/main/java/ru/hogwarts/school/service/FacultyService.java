@@ -1,6 +1,7 @@
 package ru.hogwarts.school.service;
 
 import org.springframework.stereotype.Service;
+import ru.hogwarts.school.exception.FacultyNotFoundException;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
@@ -20,7 +21,8 @@ public class FacultyService {
     }
 
     public Faculty readFaculty(long id) {
-        return facultyRepository.findById(id).get();
+        return facultyRepository.findById(id)
+                .orElseThrow(() -> new FacultyNotFoundException("Факультет с " + id + " не найден !"));
     }
 
     public Faculty editFaculty(Faculty faculty) {
@@ -43,6 +45,6 @@ public class FacultyService {
     }
 
     public Collection<Student> getStudents(long id) throws Exception {
-        return facultyRepository.findById(id).orElseThrow(() -> new Exception("Факультет не найден")).getStudents();
+        return facultyRepository.findById(id).orElseThrow(() -> new FacultyNotFoundException("Факультет не найден")).getStudents();
     }
 }
