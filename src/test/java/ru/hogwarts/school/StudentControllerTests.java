@@ -1,56 +1,96 @@
 package ru.hogwarts.school;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.*;
 import ru.hogwarts.school.controller.StudentController;
 import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.repository.StudentRepository;
+import ru.hogwarts.school.service.FacultyService;
+import ru.hogwarts.school.service.StudentService;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class StudentControllerTests {
 
-   @LocalServerPort
+public class StudentControllerTests {
+    @LocalServerPort
     private int port;
 
     @Autowired
     private StudentController studentController;
+    @Autowired
+    private StudentService studentService;
+
+    @Autowired
+    private StudentRepository studentRepository;
 
     @Autowired
     private TestRestTemplate restTemplate;
 
     @Test
-    public void contextLoad() throws Exception {
+    void contextLoads() throws Exception {
         Assertions.assertThat(studentController).isNotNull();
     }
 
     @Test
-    public void testPostStudent() throws Exception {
-        String nameStudent = "testStudent";
-        int ageStudent = 20;
+    public void getStudentInfoTest() throws Exception {
+        Assertions
+                .assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/student/1", String.class))
+                .isNotNull();
+    }
+
+    @Test
+    public void searchAgeStudentTest() throws Exception {
+        Assertions
+                .assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/student/filtr/1,2", String.class))
+                .isNotNull();
+    }
+
+    @Test
+    public void getFacultyStudentTest() throws Exception {
+        Assertions
+                .assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/student/faculty/5", String.class));
+    }
+
+    @Test
+    public void createStudentTest() throws Exception {
         Student student = new Student();
-        student.setName(nameStudent);
-        student.setAge(ageStudent);
-        Assertions
-                .assertThat(this.restTemplate.postForObject("http://localhost:" + port + "/students", student, Student.class))
-                .isNotNull();
+        student.setId(1L);
+        student.setName("Наталья");
+        student.setAge(10);
 
-    }
-
-    @Test
-    public void testGetAllStudent() throws Exception {
         Assertions
-                .assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/students", Student.class))
+                .assertThat(this.restTemplate.postForObject("http://localhost:" + port + "/student", student, String.class))
                 .isNotNull();
     }
 
     @Test
-    public void testGetStudent() throws Exception {
-        Long idStudent = 1L;
-        Assertions
-                .assertThat(this.restTemplate.postForObject("http://localhost:" + port + "/students/" + idStudent, idStudent, Student.class))
-                .isNotNull();
+    void deleteStudentTest() {
+        HttpEntity<String> entity = new HttpEntity<>("OK", new HttpHeaders());
+        ResponseEntity<String> response = restTemplate.exchange("/student/delete/4", HttpMethod.DELETE, entity, String.class);
+    }
+    @Test
+    public void editStudentTest() {
+        Student student = new Student();
+        student.setName("Наталья");
+
+        long id = studentService.createStudent(student).getId();
+        Student student_ = new Student();
+        student_.setName("Наталья");
+        HttpEntity<Student> entity = new HttpEntity<Student>(student_);
+        ResponseEntity<Student> response = restTemplate.exchange("/student", HttpMethod.PUT, entity, Student.class,
+                id);
+        assertThat(response.getBody().getName(), is("Наталья"));
     }
 }

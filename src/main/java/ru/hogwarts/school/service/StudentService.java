@@ -21,9 +21,8 @@ public class StudentService {
         return studentRepository.save(student);
     }
 
-    public Student readStudent(long id) {
-        return studentRepository.findById(id)
-                .orElseThrow(() -> new StudentNotFoundException("Студент с " + id + " не найден !"));
+    public String readStudent(long id) throws Exception {
+        return studentRepository.findById(id).orElseThrow(() -> new StudentNotFoundException("Студент не найден")).toString();
     }
 
     public Student editStudent(Student student) {
