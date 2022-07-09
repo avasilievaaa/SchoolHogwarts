@@ -54,4 +54,13 @@ public class FacultyController {
     public Collection<Student> getStudentsFaculty(@PathVariable Long id) throws Exception {
         return facultyService.getStudents(id);
     }
+
+    @GetMapping("/longNameFacultyStream")
+    public String getLongNameFacultyStream() throws Exception {
+        return facultyService.longNameFacultyStream();
+    }
+    @GetMapping("/intStream")
+    public Integer getIntStream() throws Exception {
+        return facultyService.intStream();
+    }
 }

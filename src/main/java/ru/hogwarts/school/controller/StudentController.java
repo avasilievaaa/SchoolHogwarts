@@ -68,4 +68,13 @@ public class StudentController {
     public List<Student> getFiveStudents() throws Exception {
         return studentService.fiveStudents();
     }
+
+    @GetMapping("/avgSudentsStream")
+    public Double getAvgStudentsStream() throws Exception {
+        return studentService.avgStudentsStream();
+    }
+    @GetMapping("/nameStudentsStream")
+    public List<String>  getNameStudentsStream() throws Exception {
+        return studentService.nameStudentsStream();
+    }
 }
