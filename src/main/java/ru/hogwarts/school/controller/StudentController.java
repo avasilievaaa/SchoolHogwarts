@@ -8,6 +8,7 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
 import java.util.Collection;
+import java.util.List;
 
 
 @RestController
@@ -54,5 +55,17 @@ public class StudentController {
         return studentService.facultyStudent(id);
     }
 
+    @GetMapping("/sumSudents")
+    public Integer getSumStudents() throws Exception {
+        return studentService.sumStudents();
+    }
 
+    @GetMapping("/avgSudents")
+    public Integer getAvgStudents() throws Exception {
+        return studentService.avgStudents();
+    }
+    @GetMapping("/fiveSudents")
+    public List<Student> getFiveStudents() throws Exception {
+        return studentService.fiveStudents();
+    }
 }

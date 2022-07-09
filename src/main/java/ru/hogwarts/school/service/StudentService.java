@@ -47,7 +47,20 @@ public class StudentService {
     public Faculty facultyStudent(Long id) throws Exception {
         return studentRepository.findById(id).orElseThrow(() -> new StudentNotFoundException("Студент не найден")).getFaculty();
     }
+
     public Avatar avatarStudent(Long id) throws Exception {
         return studentRepository.findById(id).orElseThrow(() -> new StudentNotFoundException("Студент не найден")).getAvatar();
+    }
+
+    public Integer sumStudents() {
+        return studentRepository.sumStudents();
+    }
+
+    public Integer avgStudents() {
+        return studentRepository.avgStudents();
+    }
+
+    public List<Student> fiveStudents() {
+        return studentRepository.fiveStudents();
     }
 }
